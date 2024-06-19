@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  database:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: nestuser
+      POSTGRES_PASSWORD: nestpassword
+      POSTGRES_DB: nestdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    depends_on:
+      - database
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      DATABASE_HOST: database
+      DATABASE_PORT: 5432
+      DATABASE_USER: nestuser
+      DATABASE_PASSWORD: nestpassword
+      DATABASE_NAME: nestdb
+
+volumes:
+  postgres_data:
