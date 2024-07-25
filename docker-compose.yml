@@ -22,11 +22,11 @@ services:
       - .:/app
       - /app/node_modules
     environment:
-      DATABASE_HOST: database
-      DATABASE_PORT: 5432
-      DATABASE_USER: nestuser
-      DATABASE_PASSWORD: nestpassword
-      DATABASE_NAME: nestdb
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_USERNAME: nestuser
+      DB_PASSWORD: nestpassword
+      DB_DATABASE: nestdb
 
 volumes:
   postgres_data:

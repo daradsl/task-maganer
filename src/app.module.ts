@@ -17,6 +17,9 @@ dotenv.config();
       entities: ['dist/database/entities/**/*.js'],
       migrations: ['dist/database/migrations/**/*.js'],
       synchronize: false,
+      ssl: {
+        rejectUnauthorized: false,
+      },
       cli: {
         migrationsDir: 'src/database/migrations',
         entitiesDir: 'src/database/entities',
@@ -26,4 +29,4 @@ dotenv.config();
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
