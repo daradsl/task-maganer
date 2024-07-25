@@ -18,9 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration:generate": "npm run build && npx typeorm migration:generate -d ./dist/database/data-source.js",    
+    "migration:generate": "npm run build && npx typeorm migration:generate -d ./dist/database/data-source.js",
     "migration:run": "npm run build && npx typeorm migration:run -d ./dist/database/data-source.js",
-    "migration:create":"cd ./src/database/migrations && typeorm-ts-node-commonjs migration:create",    
+    "migration:create": "cd ./src/database/migrations && typeorm-ts-node-commonjs migration:create",
     "migration:show": "npm run build && npx typeorm migration:show -d ./dist/database/data-source.js",
     "migration:revert": "npm run build && npx typeorm migration:revert -d ./dist/database/data-source.js"
   },
@@ -29,11 +29,13 @@
     "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/swagger": "^7.3.1",
     "@nestjs/typeorm": "^10.0.2",
     "dotenv": "^16.4.5",
     "pg": "^8.11.5",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
+    "swagger-ui-express": "^5.0.1",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {
