@@ -21,13 +21,11 @@ services:
     image: postgres:13
     container_name: postgres_db
     environment:
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE}
-    ports:
-      - '5432:5432'
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_USERNAME: nestuser
+      DB_PASSWORD: nestpassword
+      DB_DATABASE: nestdb
 
 volumes:
   postgres_data:
