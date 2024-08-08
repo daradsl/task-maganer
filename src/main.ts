@@ -10,6 +10,7 @@ async function bootstrap() {
     .setTitle('Task Time Manager')
     .setDescription('The Task Time Manager API')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
