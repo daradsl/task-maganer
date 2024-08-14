@@ -4,8 +4,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from 'src/database/entities/user.entity';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { LoggedUser } from 'src/common/decorators/logged-user.decorator';
+import { AuthGuard } from '@nestjs/passport';
+import { LoggedUserDto } from './dto/logged-user.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -17,31 +18,31 @@ export class UserController {
         return this.userService.createUser(createUserDto);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     @Get()
     async getAllUsers(): Promise<User[]> {
         return this.userService.getAllUsers();
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     @Get('me')
-    async getCurrentUser(@LoggedUser() user: User): Promise<User> {
-        return user;
+    async getCurrentUser(@LoggedUser() loggedUser: LoggedUserDto): Promise<User> {
+        return this.userService.getUserById(loggedUser.id);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     @Get(':id')
     async getUserById(@Param('id') id: string): Promise<User> {
         return this.userService.getUserById(id);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     @Put(':id')
     async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
         return this.userService.updateUser(id, updateUserDto);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     @Delete(':id')
     async deleteUser(@Param('id') id: string): Promise<void> {
         await this.userService.deleteUser(id);
