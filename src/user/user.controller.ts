@@ -37,6 +37,12 @@ export class UserController {
     }
 
     @UseGuards(AuthGuard('jwt'))
+    @Get(':email')
+    async getUserByEmail(@Param('email') email: string): Promise<User | null> {
+        return this.userService.getUserByEmail(email);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
     @Put(':id')
     async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
         return this.userService.updateUser(id, updateUserDto);
