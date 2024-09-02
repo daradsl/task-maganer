@@ -12,7 +12,7 @@ export class AuthController {
     async login(@Body() loginDto: LoginDto) {
         const user = await this.authService.validateUser(loginDto.email, loginDto.password);
         if (!user) {
-            return { message: 'Invalid credentials' };
+            throw new Error('Invalid credentials');
         }
         return this.authService.login(user);
     }
