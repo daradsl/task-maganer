@@ -12,8 +12,13 @@ export class AuthController {
     async login(@Body() loginDto: LoginDto) {
         const user = await this.authService.validateUser(loginDto.email, loginDto.password);
         if (!user) {
-            return { message: 'Invalid credentials' };
+            throw new Error('Invalid credentials');
         }
         return this.authService.login(user);
+    }
+
+    @Post('google-login')
+    async googleLogin(@Body() params: { idToken: string }) {
+        return this.authService.loginWithGoogle(params.idToken);
     }
 }
