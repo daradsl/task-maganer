@@ -7,6 +7,7 @@ import * as dotenv from 'dotenv';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
+import { CustomLoggerService } from './logger/custom-logger.service';
 
 dotenv.config();
 
@@ -15,11 +16,22 @@ dotenv.config();
     LoggerModule.forRoot({
       pinoHttp: {
         transport: {
-          target: 'pino-pretty',
-          options: {
-            colorize: true,
-            levelfirst: true,
-          },
+          targets: [
+            {
+              target: 'pino-pretty',
+              options: {
+                colorize: true,
+              },
+              level: 'info',
+            },
+            {
+              target: 'pino/file',
+              options: {
+                destination: './logger/app.log',
+              },
+              level: 'info',
+            },
+          ],
         },
       },
     }),
@@ -45,6 +57,6 @@ dotenv.config();
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CustomLoggerService],
 })
 export class AppModule { }
