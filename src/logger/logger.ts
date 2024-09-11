@@ -1,27 +1,35 @@
 import pino from 'pino';
+import { customTimestamp } from 'src/utils/date-utils';
+
+const logOptions = {
+    colorize: true,
+    levelFirst: true,
+    translateTime: 'SYS:dd/mm/yyyy HH:MM:ss',
+    sync: false,
+};
 
 const prettyTransport = pino.transport({
     target: 'pino-pretty',
     options: {
-        colorize: true,
-        translateTime: 'SYS:standard',
-        ignore: 'pid,hostname'
-    }
+        ...logOptions,
+    },
+    level: 'info',
 });
 
 const fileLogger = pino(
     {
         level: 'info',
-    },
-    pino.destination({ dest: './logger/app.log', sync: false })
-);
+        timestamp: customTimestamp,
+        transport: {
+            target: 'pino/file',
+            options: {
+                destination: './logger/app.log',
+                ...logOptions,
+            },
+        },
+    });
 
-const consoleLogger = pino(
-    {
-        level: 'info',
-    },
-    prettyTransport
-);
+const consoleLogger = pino(prettyTransport);
 
 const logger = {
     info: (msg: string) => {

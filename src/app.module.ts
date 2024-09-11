@@ -6,35 +6,12 @@ import { UserModule } from './user/user.module';
 import * as dotenv from 'dotenv';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { LoggerModule } from 'nestjs-pino';
 import { CustomLoggerService } from './logger/custom-logger.service';
 
 dotenv.config();
 
 @Module({
   imports: [
-    LoggerModule.forRoot({
-      pinoHttp: {
-        transport: {
-          targets: [
-            {
-              target: 'pino-pretty',
-              options: {
-                colorize: true,
-              },
-              level: 'info',
-            },
-            {
-              target: 'pino/file',
-              options: {
-                destination: './logger/app.log',
-              },
-              level: 'info',
-            },
-          ],
-        },
-      },
-    }),
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
