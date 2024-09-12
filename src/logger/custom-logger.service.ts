@@ -20,8 +20,4 @@ export class CustomLoggerService implements LoggerService {
     debug(message: string, context?: string) {
         this.logger.debug(`${context ? `[${context}] ` : ''}${message}`);
     }
-
-    verbose(message: string, context?: string) {
-        this.logger.trace(`${context ? `[${context}] ` : ''}${message}`);
-    }
 }
