@@ -11,6 +11,8 @@ import { LoggerModule } from 'nestjs-pino';
 import { IncomingMessage } from 'http';
 import { ServerResponse } from 'http';
 import { LoggingMiddleware } from './middleware/loggin.middleware';
+import { ExecutionTimeInterceptor } from './interceptor/execution-time.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 dotenv.config();
 
@@ -78,9 +80,13 @@ dotenv.config();
     } as TypeOrmModuleOptions),
     UserModule,
     AuthModule,
+    LoggerModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CustomLoggerService],
+  providers: [AppService, CustomLoggerService, {
+    provide: APP_INTERCEPTOR,
+    useClass: ExecutionTimeInterceptor,
+  },],
 })
 
 export class AppModule implements NestModule {
