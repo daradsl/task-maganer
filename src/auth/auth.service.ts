@@ -1,12 +1,14 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, UseInterceptors } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/database/entities/user.entity';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { OAuth2Client } from 'google-auth-library';
+import { ExecutionTimeInterceptor } from 'src/interceptor/execution-time.interceptor';
 
 @Injectable()
+@UseInterceptors(ExecutionTimeInterceptor)
 export class AuthService {
     private client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 

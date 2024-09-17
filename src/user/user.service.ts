@@ -1,12 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UseInterceptors } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/database/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { ExecutionTimeInterceptor } from 'src/interceptor/execution-time.interceptor';
 
 @Injectable()
+@UseInterceptors(ExecutionTimeInterceptor)
 export class UserService {
     constructor(
         @InjectRepository(User)
