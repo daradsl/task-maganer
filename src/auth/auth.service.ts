@@ -45,10 +45,13 @@ export class AuthService {
                 throw new UnauthorizedException('Invalid Google token');
             }
 
-            let user = await this.userService.getUserByEmail(payload.email);
+            const userId = payload.sub;
+
+            let user = await this.userService.getUserByEmailAndGoogleId(payload.email, userId);
 
             if (!user) {
                 const createUserDto: CreateUserDto = {
+                    googleId: userId,
                     email: payload.email,
                     name: payload.name,
                 };

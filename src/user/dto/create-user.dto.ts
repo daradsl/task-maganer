@@ -14,4 +14,8 @@ export class CreateUserDto {
   @IsOptional()
   @IsDate()
   birthDate?: Date;
+
+  @IsString()
+  @IsOptional()
+  googleId?: string;
 }

@@ -16,6 +16,9 @@ export class User {
   email: string;
 
   @Column({ nullable: true })
+  googleId?: string;
+
+  @Column({ nullable: true })
   password?: string;
 
   @BeforeInsert()
