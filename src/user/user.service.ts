@@ -21,8 +21,8 @@ export class UserService {
     }
 
     async createUser(createUserDto: CreateUserDto): Promise<User> {
-        const { name, email, password, birthDate } = createUserDto;
-        const user = this.userRepository.create({ name, email, password, birthDate });
+        const { name, email, password, birthDate, googleId } = createUserDto;
+        const user = this.userRepository.create({ name, email, password, birthDate, googleId });
         return this.userRepository.save(user);
     }
 
@@ -36,6 +36,10 @@ export class UserService {
 
     async getUserByEmail(email: string): Promise<User | null> {
         return this.userRepository.findOne({ where: { email: email } });
+    }
+
+    async getUserByEmailAndGoogleId(email: string, googleId: string): Promise<User | null> {
+        return this.userRepository.findOne({ where: { email, googleId } });
     }
 
     async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
