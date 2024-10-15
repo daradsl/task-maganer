@@ -6,6 +6,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { ExecutionTimeInterceptor } from 'src/interceptor/execution-time.interceptor';
+import * as faker from 'faker';
 
 @Injectable()
 @UseInterceptors(ExecutionTimeInterceptor)
@@ -55,6 +56,32 @@ export class UserService {
         const result = await this.userRepository.delete(id);
         if (result.affected === 0) {
             throw new NotFoundException(`User with ID ${id} not found`);
+        }
+    }
+
+    async bulkInsertUsers(): Promise<void> {
+        const users = [];
+        const batchSize = 10000;
+
+        for (let i = 0; i < 1000000; i++) {
+            const user = new User();
+            user.name = faker.name.findName();
+            user.email = `user_${i}_${faker.internet.email()}`;
+            user.password = await bcrypt.hash(faker.internet.password(), 10);
+            user.birthDate = faker.date.past(50, new Date(2000, 0, 1));
+
+            users.push(user);
+
+            if (users.length === batchSize) {
+                await this.userRepository.save(users);
+                console.log(`Inserido lote ${(i / batchSize) + 1}`);
+                users.length = 0;
+            }
+        }
+
+        if (users.length > 0) {
+            await this.userRepository.save(users);
+            console.log('Inserido último lote');
         }
     }
 }
