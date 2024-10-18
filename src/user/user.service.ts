@@ -7,6 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { ExecutionTimeInterceptor } from 'src/interceptor/execution-time.interceptor';
 import * as faker from 'faker';
+import { Address } from 'src/database/entities/address.entity';
 
 @Injectable()
 @UseInterceptors(ExecutionTimeInterceptor)
@@ -14,6 +15,8 @@ export class UserService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+        @InjectRepository(Address)
+        private readonly addressRepository: Repository<Address>,
     ) { }
 
     async getAllUsers(): Promise<User[]> {
@@ -61,6 +64,7 @@ export class UserService {
 
     async bulkInsertUsers(): Promise<void> {
         const users = [];
+        const addresses = [];
         const batchSize = 10000;
 
         for (let i = 0; i < 1000000; i++) {
@@ -70,17 +74,29 @@ export class UserService {
             user.password = await bcrypt.hash(faker.internet.password(), 10);
             user.birthDate = faker.date.past(50, new Date(2000, 0, 1));
 
+            const address = new Address();
+            address.complement = faker.address.secondaryAddress();
+            address.city = faker.address.city();
+            address.state = faker.address.state();
+            address.zipCode = faker.address.zipCode();
+
+            address.user = user;
+
             users.push(user);
+            addresses.push(address);
 
             if (users.length === batchSize) {
                 await this.userRepository.save(users);
+                await this.addressRepository.save(addresses);
                 console.log(`Inserido lote ${(i / batchSize) + 1}`);
                 users.length = 0;
+                addresses.length = 0;
             }
         }
 
         if (users.length > 0) {
             await this.userRepository.save(users);
+            await this.addressRepository.save(addresses);
             console.log('Inserido último lote');
         }
     }
