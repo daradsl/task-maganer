@@ -53,4 +53,9 @@ export class UserController {
     async deleteUser(@Param('id') id: string): Promise<void> {
         await this.userService.deleteUser(id);
     }
+
+    @Post('bulk-insert')
+    async bulkInsertUsers(): Promise<void> {
+        await this.userService.bulkInsertUsers();
+    }
 }
