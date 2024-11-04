@@ -1,13 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { Logger } from 'nestjs-pino';
+import { CustomLoggerService } from './logger/custom-logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   const port = process.env.PORT || 3000;
 
-  app.useLogger(app.get(Logger));
+  app.useLogger(app.get(CustomLoggerService));
 
   const config = new DocumentBuilder()
     .setTitle('Task Time Manager')
@@ -26,5 +26,7 @@ async function bootstrap() {
   });
 
   await app.listen(port);
+  app.get(CustomLoggerService).log(`Application is running on: ${await app.getUrl()}`);
 }
+
 bootstrap();

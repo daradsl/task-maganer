@@ -1,7 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, Index, OneToOne, JoinColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Address } from './address.entity';
 
 @Entity()
+@Index(['email'])
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: number;
@@ -16,7 +18,14 @@ export class User {
   email: string;
 
   @Column({ nullable: true })
+  googleId?: string;
+
+  @Column({ nullable: true })
   password?: string;
+
+  @OneToOne(() => Address, (address) => address.user, { nullable: true })
+  @JoinColumn()
+  address?: Address;
 
   @BeforeInsert()
   async hashPassword() {
