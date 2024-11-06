@@ -1,0 +1,55 @@
+config:
+  target: "http://localhost:4000"
+  phases:
+    - duration: 10     # Duração da execução em segundos
+      arrivalRate: 5   # Requisições por segundo
+  processor: "./dataGenerate.js"
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: "Fluxo Completo de Teste"
+    flow:
+      - post:
+          url: "/auth/login"
+          json:
+            email: "teste@gmail.com"
+            password: "123"
+          capture:
+            - json: "$.access_token"
+              as: authToken
+
+      - function: "generateUserData"
+      - post:
+          url: "/users"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            name: "{{ name }}"
+            email: "{{ email }}"
+            password: "123"
+            birthDate: "{{ birthDate }}"
+          capture:
+            - json: "$.id"
+              as: userId
+      
+      - get:
+          url: "/users/me"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+
+      - function: "generateUpdateData"
+      - put:
+          url: "/users/{{ userId }}"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            name: "{{ updatedName }}"
+            email: "{{ updatedEmail }}"
+            password: "novaSenha123"
+
+      - delete:
+          url: "/users/{{ userId }}"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
