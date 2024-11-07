@@ -10,6 +10,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
+    "start:test": "set NODE_OPTIONS=--max-old-space-size=4096 && nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -22,7 +23,10 @@
     "migration:run": "npm run build && npx typeorm migration:run -d ./dist/database/data-source.js",
     "migration:create": "cd ./src/database/migrations && typeorm-ts-node-commonjs migration:create",
     "migration:show": "npm run build && npx typeorm migration:show -d ./dist/database/data-source.js",
-    "migration:revert": "npm run build && npx typeorm migration:revert -d ./dist/database/data-source.js"
+    "migration:revert": "npm run build && npx typeorm migration:revert -d ./dist/database/data-source.js",
+    "test:load": "npx artillery run tests/userTests.yml",
+    "test:load:save": "set NODE_OPTIONS=--max-old-space-size=4096 && npx artillery run tests/userTests.yml -o tests/results.json",
+    "test:load:report": "npx artillery report --output tests/results.html tests/results.json"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -62,6 +66,7 @@
     "@types/supertest": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "artillery": "^2.0.21",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
