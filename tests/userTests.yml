@@ -1,7 +1,7 @@
 config:
   target: "http://localhost:4000"
   phases:
-    - duration: 10     # Duração da execução em segundos
+    - duration: 20     # Duração da execução em segundos
       arrivalRate: 5   # Requisições por segundo
   processor: "./dataGenerate.js"
   defaults:
@@ -82,6 +82,15 @@ scenarios:
 
   - name: "Fluxo de criação e atualização de usuário"
     flow:
+      - post:
+          url: "/auth/login"
+          json:
+            email: "teste@gmail.com"
+            password: "123"
+          capture:
+            - json: "$.access_token"
+              as: authToken
+
       - function: "generateUserData"
       - post:
           url: "/users"
