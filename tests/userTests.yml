@@ -23,8 +23,6 @@ scenarios:
       - function: "generateUserData"
       - post:
           url: "/users"
-          headers:
-            Authorization: "Bearer {{ authToken }}"
           json:
             name: "{{ name }}"
             email: "{{ email }}"
@@ -33,7 +31,7 @@ scenarios:
           capture:
             - json: "$.id"
               as: userId
-      
+
       - get:
           url: "/users/me"
           headers:
@@ -53,3 +51,55 @@ scenarios:
           url: "/users/{{ userId }}"
           headers:
             Authorization: "Bearer {{ authToken }}"
+
+  - name: "Fluxo de criação e consulta de usuário"
+    flow:
+      - post:
+          url: "/auth/login"
+          json:
+            email: "teste@gmail.com"
+            password: "123"
+          capture:
+            - json: "$.access_token"
+              as: authToken
+
+      - function: "generateUserData"
+      - post:
+          url: "/users"
+          json:
+            name: "{{ name }}"
+            email: "{{ email }}"
+            password: "123"
+            birthDate: "{{ birthDate }}"
+          capture:
+            - json: "$.id"
+              as: userId
+
+      - get:
+          url: "/users/me"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+
+  - name: "Fluxo de criação e atualização de usuário"
+    flow:
+      - function: "generateUserData"
+      - post:
+          url: "/users"
+          json:
+            name: "{{ name }}"
+            email: "{{ email }}"
+            password: "123"
+            birthDate: "{{ birthDate }}"
+          capture:
+            - json: "$.id"
+              as: userId
+
+      - function: "generateUpdateData"
+      - put:
+          url: "/users/{{ userId }}"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            name: "{{ updatedName }}"
+            email: "{{ updatedEmail }}"
+            password: "novaSenha123"
