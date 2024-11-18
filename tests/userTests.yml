@@ -1,8 +1,8 @@
 config:
   target: "http://localhost:4000"
   phases:
-    - duration: 20     # Duração da execução em segundos
-      arrivalRate: 5   # Requisições por segundo
+    - duration: 50
+      arrivalRate: 30
   processor: "./dataGenerate.js"
   defaults:
     headers:
