@@ -77,11 +77,11 @@ dotenv.config();
         migrationsDir: 'src/database/migrations',
         entitiesDir: 'src/database/entities',
       },
-      extra: {
-        max: 20,
-        idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 2000,
-      },
+      // extra: {
+      //   max: 20,
+      //   idleTimeoutMillis: 30000,
+      //   connectionTimeoutMillis: 2000,
+      // },
     } as TypeOrmModuleOptions),
     UserModule,
     AuthModule,
