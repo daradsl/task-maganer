@@ -13,6 +13,7 @@ import { ServerResponse } from 'http';
 import { LoggingMiddleware } from './middleware/loggin.middleware';
 import { ExecutionTimeInterceptor } from './interceptor/execution-time.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { MonitorService } from './monitor/monitor.service'; // Importe o serviço
 
 dotenv.config();
 
@@ -45,17 +46,6 @@ dotenv.config();
               },
               level: 'info',
             },
-            // {
-            //   target: 'pino/file',
-            //   options: {
-            //     destination: './logger/app.log',
-            //     translateTime: 'SYS:dd/MM/yyyy HH:mm:ss',
-            //     colorize: true,
-            //     levelFirst: true,
-            //     sync: false,
-            //   },
-            //   level: 'info',
-            // },
           ],
         },
       },
@@ -70,9 +60,6 @@ dotenv.config();
       entities: ['dist/database/entities/**/*.js'],
       migrations: ['dist/database/migrations/**/*.js'],
       synchronize: false,
-      // ssl: {
-      //   rejectUnauthorized: false,
-      // },
       cli: {
         migrationsDir: 'src/database/migrations',
         entitiesDir: 'src/database/entities',
@@ -88,16 +75,18 @@ dotenv.config();
     LoggerModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CustomLoggerService, {
-    provide: APP_INTERCEPTOR,
-    useClass: ExecutionTimeInterceptor,
-  },],
+  providers: [
+    AppService,
+    CustomLoggerService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ExecutionTimeInterceptor,
+    },
+    MonitorService, // Adicione o MonitorService para iniciar o monitoramento
+  ],
 })
-
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggingMiddleware)
-      .forRoutes('*');
+    consumer.apply(LoggingMiddleware).forRoutes('*');
   }
 }
