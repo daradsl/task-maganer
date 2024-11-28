@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException, UseInterceptors } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { User } from 'src/database/entities/user.entity';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { OAuth2Client } from 'google-auth-library';
