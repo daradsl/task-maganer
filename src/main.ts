@@ -2,10 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CustomLoggerService } from './logger/custom-logger.service';
-import { tracingService } from './monitor/tracing.service';
+import { initTracing } from './monitor/tracing.service';
 
 async function bootstrap() {
-  tracingService.start();
+  await initTracing();
+
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   const port = process.env.PORT || 3000;
 

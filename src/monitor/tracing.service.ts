@@ -1,19 +1,34 @@
-import { NodeSDK } from "@opentelemetry/sdk-node";
-import { SimpleSpanProcessor } from "@opentelemetry/sdk-trace-base";
-import { Resource } from "@opentelemetry/resources";
-import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
-import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
-import { NestInstrumentation } from "@opentelemetry/instrumentation-nestjs-core";
-import { JaegerExporter } from "@opentelemetry/exporter-jaeger";
+import * as opentelemetry from '@opentelemetry/sdk-node';
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { Resource } from '@opentelemetry/resources';
+import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
+import { JaegerExporter } from '@opentelemetry/exporter-jaeger';
 
-const traceExport = new JaegerExporter({
-    endpoint: 'http://localhost:14268/api/traces',
-});
+export const initTracing = async (): Promise<void> => {
+    const traceExporter = new JaegerExporter({
+        endpoint: 'http://tracing:14268/api/traces',
+    });
 
-export const tracingService = new NodeSDK({
-    resource: new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: `task-time-manager`,
-    }),
-    spanProcessor: new SimpleSpanProcessor(traceExport),
-    instrumentations: [new HttpInstrumentation(), new NestInstrumentation()],
-});
+    const sdk = new opentelemetry.NodeSDK({
+        resource: new Resource({
+            [SemanticResourceAttributes.SERVICE_NAME]: 'task-time-manager-api',
+        }),
+        instrumentations: [getNodeAutoInstrumentations()],
+        spanProcessor: new SimpleSpanProcessor(traceExporter),
+    });
+    try {
+        await sdk.start();
+        console.log('Tracing initialized');
+    } catch (error) {
+        console.log('Error initializing tracing', error);
+    }
+
+    process.on('SIGTERM', () => {
+        sdk
+            .shutdown()
+            .then(() => console.log('Tracing terminated'))
+            .catch((error) => console.log('Error terminating tracing', error))
+            .finally(() => process.exit(0));
+    });
+};
